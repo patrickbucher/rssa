@@ -46,8 +46,8 @@ pub async fn post_new_course(
 mod tests {
     use super::*;
     use crate::AppState;
-    use chrono::NaiveDate;
     use actix_web::{http::StatusCode, web};
+    use chrono::NaiveDate;
     use dotenv::dotenv;
     use sqlx::postgres::PgPool;
     use std::env;
