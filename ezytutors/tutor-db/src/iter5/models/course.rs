@@ -1,3 +1,4 @@
+use crate::errors::EzyTutorError;
 use actix_web::web;
 use chrono::NaiveDateTime;
 use serde::{Deserialize, Serialize};
@@ -50,7 +51,7 @@ impl From<web::Json<CreateCourse>> for CreateCourse {
 impl TryFrom<web::Json<CreateCourse>> for CreateCourse {
     type Error = EzyTutorError;
 
-    fn try_from(new_course: web::Json<CreateCourse>) -> Self {
+    fn try_from(new_course: web::Json<CreateCourse>) -> Result<Self, Self::Error> {
         Ok(CreateCourse {
             tutor_id: new_course.tutor_id,
             course_name: new_course.course_name.clone(),
@@ -82,7 +83,7 @@ impl From<web::Json<UpdateCourse>> for UpdateCourse {
         UpdateCourse {
             course_name: update_course.course_name.clone(),
             course_description: update_course.course_description.clone(),
-            course_format: update_course.course_foramat.clone(),
+            course_format: update_course.course_format.clone(),
             course_structure: update_course.course_structure.clone(),
             course_level: update_course.course_level.clone(),
             course_duration: update_course.course_duration.clone(),

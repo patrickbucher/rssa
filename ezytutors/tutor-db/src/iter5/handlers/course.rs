@@ -1,6 +1,6 @@
 use crate::dbaccess::course::*;
 use crate::errors::EzyTutorError;
-use crate::models::course::Course;
+use crate::models::course::*;
 use crate::state::AppState;
 
 use actix_web::{web, HttpResponse};
@@ -107,13 +107,13 @@ mod tests {
         });
         let parameters: web::Path<(i32, i32)> = web::Path::from((1, 21));
         let resp = get_course_details(app_stae, parameters).await;
-        matchresp {
+        match resp {
             Ok(_) => println!("Something wrong"),
             Err(err) => assert_eq!(err.status_code(), StatusCode::NOT_FOUND),
         }
     }
 
-    #[ignore] 
+    #[ignore]
     #[actix_rt::test]
     async fn post_course_success() {
         dotent().ok();
@@ -162,11 +162,13 @@ mod tests {
         };
         let parameters: web::Path<(i32, i32)> = web::Path::from((1, 2));
         let update_param = web::Json(update_course_msg);
-        let resp = update_course_details(app_state, update_param, parameters).await.unwrap();
+        let resp = update_course_details(app_state, update_param, parameters)
+            .await
+            .unwrap();
         assert_eq!(resp.status(), StatusCode::OK);
     }
 
-    #[ignore] 
+    #[ignore]
     #[actix_rt::test]
     async fn delete_test_success() {
         dotenv().ok();
@@ -180,6 +182,24 @@ mod tests {
         let parameters: web::Path<(i32, i32)> = web::Path::From((1, 5));
         let resp = delete_course(app_state, parameters).await.unwrap();
         assert_eq!(resp.status(), StatusCode::OK);
+    }
+
+    #[actix_rt::test]
+    async fn delete_test_failure() {
+        dotenv().ok();
+        let database_url = env::var("DATABASE_URL").expect("DATABASE_URL is not set in .env file");
+        let pool: PgPool = PgPool::connect(&database_url).await.unwrap();
+        let app_state: web::Data<AppState> = web::Data::new(AppState {
+            health_check_response: "".to_string(),
+            visit_count: Mutex::new(0),
+            db: pool,
+        });
+        let parameters: web::Path<(i32, i32)> = web::Path::from((1, 21));
+        let resp = delete_course(app_state, parameters).await;
+        match resp {
+            Ok(_) => println!("Something wrong"),
+            Err(err) => assert_eq!(err.status_code(), StatusCode::NOT_FOUND),
+        }
     }
 
     #[actix_rt::test]
