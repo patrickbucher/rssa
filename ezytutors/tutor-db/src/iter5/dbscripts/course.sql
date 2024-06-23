@@ -25,3 +25,8 @@ create table ezy_course_c6 (
     course_level varchar(30),
     posted_time timestamp default now()
 );
+
+insert into ezy_course_c6 (course_id, tutor_id, course_name, posted_time)
+values (1, 1, 'First course', '2020-12-17 05:40:00');
+insert into ezy_course_c6 (course_id, tutor_id, course_name, posted_time)
+values (2, 1, 'Second course', '2020-12-18 05:45:00');
