@@ -34,9 +34,13 @@ pub async fn update_tutor_details(
     tutor_id: web::Path<i32>,
     update_tutor: web::Json<UpdateTutor>,
 ) -> Result<HttpResponse, EzyTutorError> {
-    update_tutor_details_db(&app_state.db, tutor_id, UpdateTutor::from(update_tutor))
-        .await
-        .map(|tutor| HttpResponse::Ok().json(tutor))
+    update_tutor_details_db(
+        &app_state.db,
+        tutor_id.into_inner(),
+        UpdateTutor::from(update_tutor),
+    )
+    .await
+    .map(|tutor| HttpResponse::Ok().json(tutor))
 }
 
 pub async fn delete_tutor(

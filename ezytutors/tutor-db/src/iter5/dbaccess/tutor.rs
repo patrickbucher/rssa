@@ -61,3 +61,58 @@ pub async fn post_new_tutor_db(pool: &PgPool, new_tutor: NewTutor) -> Result<Tut
         tutor_profile: tutor_row.tutor_profile,
     })
 }
+
+pub async fn delete_tutor_db(pool: &PgPool, tutor_id: i32) -> Result<String, EzyTutorError> {
+    let tutor_row = sqlx::query!("DELETE FROM ezy_tutor_c6 WHERE tutor_id = $1", tutor_id)
+        .execute(pool)
+        .await?;
+    Ok(format!("Deleted {:#?} record", tutor_row))
+}
+
+pub async fn update_tutor_details_db(
+    pool: &PgPool,
+    tutor_id: i32,
+    update_tutor: UpdateTutor,
+) -> Result<Tutor, EzyTutorError> {
+    let current_tutor_row = sqlx::query_as!(
+        Tutor,
+        "SELECT * fROM ezy_tutor_c6 WHERE tutor_id = $1",
+        tutor_id
+    )
+    .fetch_one(pool)
+    .await
+    .map_err(|_err| EzyTutorError::NotFound("Tutor id not found".into()))?;
+
+    let name: String = if let Some(name) = update_tutor.tutor_name {
+        name
+    } else {
+        current_tutor_row.tutor_name
+    };
+    let pic_url: String = if let Some(pic_url) = update_tutor.tutor_pic_url {
+        pic_url
+    } else {
+        current_tutor_row.tutor_pic_url
+    };
+    let profile: String = if let Some(profile) = update_tutor.tutor_profile {
+        profile
+    } else {
+        current_tutor_row.tutor_profile
+    };
+
+    let tutor_row = sqlx::query_as!(
+        Tutor,
+        "UPDATE ezy_tutor_c6 SET
+        tutor_name = $1, tutor_pic_url = $2, tutor_profile = $3
+        RETURNING tutor_id, tutor_name, tutor_pic_url, tutor_profile",
+        name,
+        pic_url,
+        profile
+    )
+    .fetch_one(pool)
+    .await;
+    if let Ok(tutor) = tutor_row {
+        Ok(tutor)
+    } else {
+        Err(EzyTutorError::NotFound("Tutor id not found".into()))
+    }
+}

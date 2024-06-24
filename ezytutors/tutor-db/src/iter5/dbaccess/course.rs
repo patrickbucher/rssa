@@ -138,29 +138,11 @@ pub async fn update_course_details_db(
     let course_row = sqlx::query_as!(
         Course,
         "UPDATE ezy_course_c6 SET
-        course_name = $1,
-        course_description = $2,
-        course_format = $3,
-        course_structure = $4,
-        course_duration = $5,
-        course_price = $6,
-        course_language  = $7,
-        course_level = $8
-        WHERE
-        tutor_id = $9 AND
-        course_id = $10
-        RETURNING
-        tutor_id,
-        course_id,
-        course_name,
-        course_description,
-        course_duration,
-        course_level,
-        course_format,
-        course_language,
-        course_structure,
-        course_price,
-        posted_time",
+        course_name = $1, course_description = $2, course_format = $3, course_structure = $4,
+        course_duration = $5, course_price = $6, course_language  = $7, course_level = $8
+        WHERE tutor_id = $9 AND course_id = $10
+        RETURNING tutor_id, course_id, course_name, course_description, course_duration,
+        course_level, course_format, course_language, course_structure, course_price, posted_time",
         name,
         description,
         format,
