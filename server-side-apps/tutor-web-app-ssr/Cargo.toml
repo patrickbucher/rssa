@@ -9,3 +9,6 @@ actix-web = "4.8.0"
 env_logger = "0.11.3"
 serde = { version = "1.0.203", features = ["derive"] }
 tera = "1.20.0"
+
+[dev-dependencies]
+actix-rt = "2.10.0"

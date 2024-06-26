@@ -2433,6 +2433,7 @@ name = "tutor-web-app-ssr"
 version = "0.1.0"
 dependencies = [
  "actix-files",
+ "actix-rt",
  "actix-web",
  "env_logger",
  "serde",

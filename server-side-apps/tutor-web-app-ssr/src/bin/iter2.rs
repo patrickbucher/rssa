@@ -51,3 +51,47 @@ fn app_config(config: &mut web::ServiceConfig) {
             .service(web::resource("/tutors").route(web::post().to(handle_post_tutor))),
     );
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use actix_web::dev::{Service, ServiceResponse};
+    use actix_web::http::{header::HeaderValue, header::CONTENT_TYPE, StatusCode};
+    use actix_web::test::{self, TestRequest};
+    use actix_web::web::Form;
+    use actix_web::HttpResponseBuilder;
+
+    #[actix_rt::test]
+    async fn handle_post_1_unit_test() {
+        let params = Form(Tutor {
+            name: "Terry".to_string(),
+        });
+        let tera = Tera::new(concat!(env!("CARGO_MANIFEST_DIR"), "/static/iter2/**/*")).unwrap();
+        let webdata_tera = web::Data::new(tera);
+        let resp = handle_post_tutor(webdata_tera, params).await.unwrap();
+        assert_eq!(resp.status(), StatusCode::OK);
+        assert_eq!(
+            resp.headers().get(CONTENT_TYPE).unwrap(),
+            HeaderValue::from_static("text/html")
+        );
+    }
+
+    #[actix_rt::test]
+    async fn handle_post_2_integration_test() {
+        let tera = Tera::new(concat!(env!("CARGO_MANIFEST_DIR"), "/static/iter2/**/*")).unwrap();
+        let mut app =
+            test::init_service(App::new().app_data(Data::new(tera)).configure(app_config)).await;
+        let req = test::TestRequest::post()
+            .uri("/tutors")
+            .set_form(&Tutor {
+                name: "Terry".to_string(),
+            })
+            .to_request();
+        let resp: ServiceResponse = app.call(req).await.unwrap();
+        assert_eq!(resp.status(), StatusCode::OK);
+        assert_eq!(
+            resp.headers().get(CONTENT_TYPE).unwrap(),
+            HeaderValue::from_static("text/html")
+        );
+    }
+}
