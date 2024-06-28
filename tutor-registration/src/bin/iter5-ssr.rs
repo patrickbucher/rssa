@@ -19,7 +19,7 @@ async fn main() -> std::io::Result<()> {
     HttpServer::new(move || {
         let tera = Tera::new(concat!(env!("CARGO_MANIFEST_DIR"), "/static/iter5/**/*")).unwrap();
         App::new()
-            .data(tera)
+            .app_data(web::Data::new(tera))
             .app_data(shared_data.clone())
             .configure(app_config)
     })

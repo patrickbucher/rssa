@@ -19,7 +19,7 @@ pub struct MyErrorResponse {
 impl std::error::Error for EzyTutorError {}
 
 impl EzyTutorError {
-    fn error_resposne(&self) -> String {
+    fn error_response(&self) -> String {
         match self {
             EzyTutorError::DBError(msg) => {
                 println!("Database error occurred: {:?}", msg);
@@ -53,7 +53,7 @@ impl error::ResponseError for EzyTutorError {
 
     fn error_response(&self) -> HttpResponse {
         HttpResponse::build(self.status_code()).json(MyErrorResponse {
-            error_message: self.error_resposne(),
+            error_message: self.error_response(),
         })
     }
 }

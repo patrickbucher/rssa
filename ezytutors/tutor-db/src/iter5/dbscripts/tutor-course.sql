@@ -26,11 +26,6 @@ create table ezy_course_c6 (
     on delete cascade
 );
 
-insert into ezy_course_c6 (course_id, tutor_id, course_name, posted_time)
-values (1, 1, 'First course', '2020-12-17 05:40:00');
-insert into ezy_course_c6 (course_id, tutor_id, course_name, posted_time)
-values (2, 1, 'Second course', '2020-12-18 05:45:00');
-
 grant all privileges on table ezy_tutor_c6 to truuser;
 grant all privileges on table ezy_course_c6 to truuser;
 grant all privileges on all sequences in schema public to truuser;
