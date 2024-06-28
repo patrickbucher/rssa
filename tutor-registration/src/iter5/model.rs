@@ -13,12 +13,12 @@ pub struct TutorRegisterForm {
 #[derive(Serialize, Deserialize, Debug)]
 pub struct TutorResponse {
     pub tutor_id: i32,
-    pub tutor_name:  String,
+    pub tutor_name: String,
     pub tutor_pic_url: String,
     pub tutor_profile: String,
 }
 
-#[derive(Serialize, Debug, Debug, sqlx::FromRow)]
+#[derive(Serialize, Debug, sqlx::FromRow)]
 pub struct User {
     pub username: String,
     pub tutor_id: Option<i32>,
